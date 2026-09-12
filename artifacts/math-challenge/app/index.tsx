@@ -423,27 +423,114 @@ export default function GameScreen() {
   }
 
   if (screen === 'leaderboard') {
+    const rankedScores = scores
+      .filter((record) => record.operation === operation && record.digitLevel === digitLevel)
+      .sort((a, b) => b.score - a.score || b.accuracy - a.accuracy)
+      .slice(0, 10);
+
     return (
       <View style={styles.screen}>
         {renderHeader('Leaderboard', resetToSetup)}
-        <View style={[styles.leaderboardContent, { paddingBottom: insets.bottom + 24 }]}>
+        <ScrollView
+          contentContainerStyle={[styles.leaderboardContent, { paddingBottom: insets.bottom + 24 }]}
+          showsVerticalScrollIndicator={false}
+        >
           <View style={styles.leaderboardHero}>
-            <View style={styles.leaderboardIcon}><Feather name="globe" size={25} color={colors.primaryForeground} /></View>
-            <Text style={styles.leaderboardTitle}>Compete by category</Text>
-            <Text style={styles.leaderboardText}>Global, country, region, and city rankings will be powered by secure accounts in the next phase.</Text>
-          </View>
-          <View style={styles.categoryPreview}>
-            <Text style={styles.categoryPreviewLabel}>YOUR CATEGORIES</Text>
-            {(['addition', 'subtraction', 'multiplication', 'division'] as Operation[]).map((item) => (
-              <View key={item} style={styles.categoryRow}>
-                <View style={styles.categoryIcon}><Feather name={OPERATION_META[item].icon} size={18} color={colors.primary} /></View>
-                <Text style={styles.categoryName}>{getOperationLabel(item)}</Text>
-                <Text style={styles.categoryCount}>4 levels</Text>
-                <Feather name="lock" size={15} color={colors.mutedForeground} />
+            <View style={styles.leaderboardHeroTop}>
+              <View style={styles.leaderboardIcon}><Feather name="award" size={24} color={colors.accentForeground} /></View>
+              <View style={styles.leaderboardHeroCopy}>
+                <Text style={styles.leaderboardTitle}>Your best rounds</Text>
+                <Text style={styles.leaderboardText}>Ranked practice scores saved on this device.</Text>
               </View>
-            ))}
+            </View>
+            <View style={styles.leaderboardBestRow}>
+              <Text style={styles.leaderboardBestLabel}>BEST SCORE</Text>
+              <Text style={styles.leaderboardBestValue}>{rankedScores[0]?.score ?? '—'}</Text>
+            </View>
           </View>
-        </View>
+
+          <View style={styles.leaderboardFilters}>
+            <Text style={styles.categoryPreviewLabel}>CHOOSE CATEGORY</Text>
+            <View style={styles.leaderboardOperationRow}>
+              {(['addition', 'subtraction', 'multiplication', 'division'] as Operation[]).map((item) => {
+                const selected = operation === item;
+                return (
+                  <Pressable
+                    accessibilityLabel={getOperationLabel(item)}
+                    key={item}
+                    onPress={() => setOperation(item)}
+                    style={({ pressed }) => [
+                      styles.leaderboardOperationButton,
+                      selected && styles.leaderboardFilterSelected,
+                      pressed && styles.pressed,
+                    ]}
+                  >
+                    <Text style={[styles.leaderboardOperationText, selected && styles.leaderboardFilterTextSelected]}>
+                      {OPERATION_META[item].short}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+            <View style={styles.leaderboardLevelRow}>
+              {([1, 2, 3, 4] as DigitLevel[]).map((level) => {
+                const selected = digitLevel === level;
+                return (
+                  <Pressable
+                    accessibilityLabel={`${level} digit`}
+                    key={level}
+                    onPress={() => setDigitLevel(level)}
+                    style={({ pressed }) => [
+                      styles.leaderboardLevelButton,
+                      selected && styles.leaderboardFilterSelected,
+                      pressed && styles.pressed,
+                    ]}
+                  >
+                    <Text style={[styles.leaderboardLevelText, selected && styles.leaderboardFilterTextSelected]}>
+                      {level}D
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+          </View>
+
+          <View style={styles.rankingSection}>
+            <View style={styles.rankingHeadingRow}>
+              <Text style={styles.categoryPreviewLabel}>TOP ROUNDS</Text>
+              <Text style={styles.rankingCategory}>{getOperationLabel(operation)} · {digitLevel}D</Text>
+            </View>
+            {rankedScores.length ? (
+              rankedScores.map((record, index) => (
+                <View key={record.id} style={[styles.rankingRow, index === 0 && styles.rankingRowBest]}>
+                  <View style={[styles.rankBadge, index === 0 && styles.rankBadgeBest]}>
+                    <Text style={[styles.rankNumber, index === 0 && styles.rankNumberBest]}>{index + 1}</Text>
+                  </View>
+                  <View style={styles.rankingDetails}>
+                    <Text style={styles.rankingScore}>{record.score} correct</Text>
+                    <Text style={styles.rankingMeta}>{record.accuracy}% accuracy · {new Date(record.completedAt).toLocaleDateString()}</Text>
+                  </View>
+                  {index === 0 && <Feather name="award" size={20} color={colors.accentForeground} />}
+                </View>
+              ))
+            ) : (
+              <View style={styles.rankingEmpty}>
+                <View style={styles.rankingEmptyIcon}><Feather name="bar-chart-2" size={24} color={colors.primary} /></View>
+                <Text style={styles.rankingEmptyTitle}>No scores in this category</Text>
+                <Text style={styles.rankingEmptyText}>Finish a {digitLevel}-digit {getOperationLabel(operation).toLowerCase()} round to take the first spot.</Text>
+              </View>
+            )}
+          </View>
+
+          <View style={styles.onlineNotice}>
+            <Feather name="globe" size={19} color={colors.primary} />
+            <View style={styles.onlineNoticeCopy}>
+              <Text style={styles.onlineNoticeTitle}>Global competition is next</Text>
+              <Text style={styles.onlineNoticeText}>Secure accounts and verified scores will unlock worldwide and location-based rankings.</Text>
+            </View>
+            <View style={styles.soonPill}><Text style={styles.soonPillText}>SOON</Text></View>
+          </View>
+        </ScrollView>
       </View>
     );
   }
@@ -671,15 +758,44 @@ function createStyles(colors: ReturnType<typeof useColors>) {
     historyScoreValue: { color: colors.primary, fontFamily: 'Inter_700Bold', fontSize: 21 },
     historyScoreLabel: { color: colors.mutedForeground, fontFamily: 'Inter_400Regular', fontSize: 10, marginTop: 1 },
     leaderboardContent: { paddingHorizontal: 20, paddingTop: 18 },
-    leaderboardHero: { alignItems: 'center', backgroundColor: colors.navy, borderRadius: 21, padding: 24 },
-    leaderboardIcon: { width: 52, height: 52, borderRadius: 18, backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center' },
-    leaderboardTitle: { color: colors.card, fontFamily: 'Inter_700Bold', fontSize: 22, marginTop: 15 },
-    leaderboardText: { color: colors.navyMuted, fontFamily: 'Inter_400Regular', fontSize: 13, lineHeight: 20, textAlign: 'center', marginTop: 8 },
-    categoryPreview: { marginTop: 25 },
+    leaderboardHero: { backgroundColor: colors.navy, borderRadius: 21, padding: 18 },
+    leaderboardHeroTop: { flexDirection: 'row', alignItems: 'center' },
+    leaderboardHeroCopy: { flex: 1, marginLeft: 13 },
+    leaderboardIcon: { width: 48, height: 48, borderRadius: 16, backgroundColor: colors.accent, alignItems: 'center', justifyContent: 'center' },
+    leaderboardTitle: { color: colors.primaryForeground, fontFamily: 'Inter_700Bold', fontSize: 20 },
+    leaderboardText: { color: colors.navyMuted, fontFamily: 'Inter_400Regular', fontSize: 12, lineHeight: 18, marginTop: 4 },
+    leaderboardBestRow: { marginTop: 18, paddingTop: 15, borderTopWidth: 1, borderTopColor: colors.mutedForeground, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+    leaderboardBestLabel: { color: colors.navyMuted, fontFamily: 'Inter_700Bold', fontSize: 9, letterSpacing: 1.1 },
+    leaderboardBestValue: { color: colors.accent, fontFamily: 'Inter_700Bold', fontSize: 28 },
+    leaderboardFilters: { marginTop: 22 },
     categoryPreviewLabel: { color: colors.mutedForeground, fontFamily: 'Inter_700Bold', fontSize: 10, letterSpacing: 1.1, marginBottom: 11 },
-    categoryRow: { minHeight: 62, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border, borderRadius: 14, paddingHorizontal: 13, flexDirection: 'row', alignItems: 'center', gap: 11, marginBottom: 8 },
-    categoryIcon: { width: 34, height: 34, borderRadius: 11, backgroundColor: colors.secondary, alignItems: 'center', justifyContent: 'center' },
-    categoryName: { flex: 1, color: colors.foreground, fontFamily: 'Inter_600SemiBold', fontSize: 13 },
-    categoryCount: { color: colors.mutedForeground, fontFamily: 'Inter_400Regular', fontSize: 11 },
+    leaderboardOperationRow: { flexDirection: 'row', gap: 8 },
+    leaderboardOperationButton: { flex: 1, height: 49, borderRadius: 14, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border, alignItems: 'center', justifyContent: 'center' },
+    leaderboardOperationText: { color: colors.primary, fontFamily: 'Inter_700Bold', fontSize: 22 },
+    leaderboardLevelRow: { flexDirection: 'row', gap: 8, marginTop: 8 },
+    leaderboardLevelButton: { flex: 1, height: 38, borderRadius: 11, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border, alignItems: 'center', justifyContent: 'center' },
+    leaderboardLevelText: { color: colors.foreground, fontFamily: 'Inter_700Bold', fontSize: 12 },
+    leaderboardFilterSelected: { backgroundColor: colors.primary, borderColor: colors.primary },
+    leaderboardFilterTextSelected: { color: colors.primaryForeground },
+    rankingSection: { marginTop: 23 },
+    rankingHeadingRow: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' },
+    rankingCategory: { color: colors.primary, fontFamily: 'Inter_600SemiBold', fontSize: 11 },
+    rankingRow: { minHeight: 65, borderRadius: 15, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border, paddingHorizontal: 13, flexDirection: 'row', alignItems: 'center', marginBottom: 8 },
+    rankingRowBest: { backgroundColor: colors.accent, borderColor: colors.accent },
+    rankBadge: { width: 32, height: 32, borderRadius: 11, backgroundColor: colors.secondary, alignItems: 'center', justifyContent: 'center' },
+    rankBadgeBest: { backgroundColor: colors.accentForeground },
+    rankNumber: { color: colors.primary, fontFamily: 'Inter_700Bold', fontSize: 14 },
+    rankNumberBest: { color: colors.accent },
+    rankingDetails: { flex: 1, marginLeft: 11 },
+    rankingScore: { color: colors.foreground, fontFamily: 'Inter_700Bold', fontSize: 14 },
+    rankingMeta: { color: colors.mutedForeground, fontFamily: 'Inter_400Regular', fontSize: 10, marginTop: 4 },
+    rankingEmpty: { minHeight: 150, borderRadius: 17, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 24 },
+    rankingEmptyIcon: { width: 43, height: 43, borderRadius: 14, backgroundColor: colors.secondary, alignItems: 'center', justifyContent: 'center' },
+    rankingEmptyTitle: { color: colors.foreground, fontFamily: 'Inter_700Bold', fontSize: 14, marginTop: 12 },
+    rankingEmptyText: { color: colors.mutedForeground, fontFamily: 'Inter_400Regular', fontSize: 11, lineHeight: 17, textAlign: 'center', marginTop: 5 },
+    onlineNotice: { marginTop: 18, borderRadius: 16, backgroundColor: colors.secondary, padding: 14, flexDirection: 'row', alignItems: 'center' },
+    onlineNoticeCopy: { flex: 1, marginLeft: 11, marginRight: 8 },
+    onlineNoticeTitle: { color: colors.secondaryForeground, fontFamily: 'Inter_700Bold', fontSize: 12 },
+    onlineNoticeText: { color: colors.mutedForeground, fontFamily: 'Inter_400Regular', fontSize: 10, lineHeight: 15, marginTop: 3 },
   });
 }
