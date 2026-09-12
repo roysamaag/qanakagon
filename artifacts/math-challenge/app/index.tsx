@@ -5,7 +5,6 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   FlatList,
   Keyboard,
-  KeyboardAvoidingView,
   Platform,
   Pressable,
   ScrollView,
@@ -269,20 +268,13 @@ export default function GameScreen() {
     const timeProgress = Math.max(0, Math.min(100, (remaining / GAME_DURATION_SECONDS) * 100));
     const timerIsUrgent = remaining <= 30;
     return (
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.screen}
+      <View
+        style={[
+          styles.screen,
+          styles.gameScreen,
+          { paddingTop: gameTopInset + 12, paddingBottom: insets.bottom + 10 },
+        ]}
       >
-        <ScrollView
-          automaticallyAdjustKeyboardInsets={Platform.OS === 'ios'}
-          bounces={false}
-          contentContainerStyle={[
-            styles.gameScreen,
-            { paddingTop: gameTopInset + 12, paddingBottom: insets.bottom + 10 },
-          ]}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-        >
           <View style={styles.gameTopRow}>
             <View style={styles.gameContext}>
               <View style={styles.gameContextIcon}>
@@ -370,8 +362,7 @@ export default function GameScreen() {
             </View>
             <Text style={styles.answerHint}>Press return or tap Check to submit</Text>
           </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
+      </View>
     );
   }
 
@@ -725,7 +716,7 @@ function createStyles(colors: ReturnType<typeof useColors>) {
     soonPill: { backgroundColor: colors.muted, borderRadius: 5, paddingHorizontal: 7, paddingVertical: 4 },
     soonPillText: { color: colors.mutedForeground, fontFamily: 'Inter_700Bold', fontSize: 9, letterSpacing: 0.6 },
     pressed: { opacity: 0.72 },
-    gameScreen: { flexGrow: 1, paddingHorizontal: 20 },
+    gameScreen: { paddingHorizontal: 20 },
     gameTopRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
     gameContext: { flexDirection: 'row', alignItems: 'center', flex: 1, minWidth: 0 },
     gameContextIcon: { width: 36, height: 36, borderRadius: 12, backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center' },
