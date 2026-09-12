@@ -13,7 +13,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useColors } from '@/hooks/useColors';
 
 type Operation = 'addition' | 'subtraction' | 'multiplication' | 'division';
@@ -427,11 +427,18 @@ export default function GameScreen() {
   }
 
   return (
-    <ScrollView
-      style={styles.screen}
-      contentContainerStyle={[styles.screenContent, { paddingTop: topInset + 18, paddingBottom: insets.bottom + 24 }]}
-      showsVerticalScrollIndicator={false}
-    >
+    <SafeAreaView edges={['top', 'bottom']} style={styles.screen}>
+      <ScrollView
+        style={styles.screen}
+        contentContainerStyle={[
+          styles.screenContent,
+          {
+            paddingTop: Platform.OS === 'web' ? 67 : 18,
+            paddingBottom: Platform.OS === 'web' ? 34 : 24,
+          },
+        ]}
+        showsVerticalScrollIndicator={false}
+      >
       <View style={styles.brandRow}>
         <View style={styles.brandMark}><Feather name="zap" size={19} color={colors.primaryForeground} /></View>
         <View>
@@ -516,7 +523,8 @@ export default function GameScreen() {
           <View style={styles.soonPill}><Text style={styles.soonPillText}>SOON</Text></View>
         </Pressable>
       </View>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
