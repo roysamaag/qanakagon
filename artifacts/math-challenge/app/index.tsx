@@ -5,6 +5,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   FlatList,
   Keyboard,
+  KeyboardAvoidingView,
   Platform,
   Pressable,
   ScrollView,
@@ -268,94 +269,108 @@ export default function GameScreen() {
     const timeProgress = Math.max(0, Math.min(100, (remaining / GAME_DURATION_SECONDS) * 100));
     const timerIsUrgent = remaining <= 30;
     return (
-      <View style={[styles.screen, styles.gameScreen, { paddingTop: gameTopInset + 12, paddingBottom: insets.bottom + 10 }]}>
-        <View style={styles.gameTopRow}>
-          <View style={styles.gameContext}>
-            <View style={styles.gameContextIcon}>
-              <Feather name={OPERATION_META[operation].icon} size={17} color={colors.primaryForeground} />
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.screen}
+      >
+        <ScrollView
+          bounces={false}
+          contentContainerStyle={[
+            styles.gameScreen,
+            { paddingTop: gameTopInset + 12, paddingBottom: insets.bottom + 10 },
+          ]}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.gameTopRow}>
+            <View style={styles.gameContext}>
+              <View style={styles.gameContextIcon}>
+                <Feather name={OPERATION_META[operation].icon} size={17} color={colors.primaryForeground} />
+              </View>
+              <View style={styles.gameContextCopy}>
+                <Text style={styles.gameContextTitle}>{getOperationLabel(operation)}</Text>
+                <Text style={styles.gameContextMeta}>{digitLevel} digit{digitLevel === 1 ? '' : 's'} · 4 min round</Text>
+              </View>
             </View>
-            <View style={styles.gameContextCopy}>
-              <Text style={styles.gameContextTitle}>{getOperationLabel(operation)}</Text>
-              <Text style={styles.gameContextMeta}>{digitLevel} digit{digitLevel === 1 ? '' : 's'} · 4 min round</Text>
+            <View style={[styles.timerBlock, timerIsUrgent && styles.timerBlockUrgent]}>
+              <View style={styles.timerLabelRow}>
+                <Feather name="clock" size={13} color={timerIsUrgent ? colors.destructiveForeground : colors.primary} />
+                <Text style={[styles.timerLabel, timerIsUrgent && { color: colors.destructiveForeground }]}>TIME LEFT</Text>
+              </View>
+              <Text style={[styles.timerText, timerIsUrgent && { color: colors.destructiveForeground }]}>{formatTime(remaining)}</Text>
             </View>
           </View>
-          <View style={[styles.timerBlock, timerIsUrgent && styles.timerBlockUrgent]}>
-            <View style={styles.timerLabelRow}>
-              <Feather name="clock" size={13} color={timerIsUrgent ? colors.destructiveForeground : colors.primary} />
-              <Text style={[styles.timerLabel, timerIsUrgent && { color: colors.destructiveForeground }]}>TIME LEFT</Text>
-            </View>
-            <Text style={[styles.timerText, timerIsUrgent && { color: colors.destructiveForeground }]}>{formatTime(remaining)}</Text>
-          </View>
-        </View>
-        <View style={styles.timerTrack}>
-          <View
-            style={[
-              styles.timerProgress,
-              { width: `${timeProgress}%` },
-              timerIsUrgent && styles.timerProgressUrgent,
-            ]}
-          />
-        </View>
-
-        <View style={styles.questionArea}>
-          <View style={styles.problemCard}>
-            <Text style={styles.questionLabel}>YOUR NEXT</Text>
-            <Text style={styles.questionText}>
-              {formatNumber(question.operand1)} {question.operator} {formatNumber(question.operand2)}
-            </Text>
-          </View>
-          <Text style={styles.answerLabel}>TYPE THE ANSWER</Text>
-          <View style={styles.answerRow}>
-            <TextInput
-              ref={answerInputRef}
-              autoFocus
-              autoCorrect={false}
-              blurOnSubmit={false}
-              keyboardType="number-pad"
-              onChangeText={setAnswerText}
-              onSubmitEditing={submitAnswer}
-              returnKeyType="done"
-              style={styles.answerInput}
-              value={answerText}
+          <View style={styles.timerTrack}>
+            <View
+              style={[
+                styles.timerProgress,
+                { width: `${timeProgress}%` },
+                timerIsUrgent && styles.timerProgressUrgent,
+              ]}
             />
+          </View>
+
+          <View style={styles.gameHudRow}>
+            <View style={styles.statStrip}>
+              <View style={styles.statItem}>
+                <Text style={styles.statValue}>{totalAttempted}</Text>
+                <Text style={styles.statLabel}>attempted</Text>
+              </View>
+              <View style={styles.statDivider} />
+              <View style={styles.statItem}>
+                <Text style={styles.statValue}>{totalAttempted ? Math.round((correctAnswers / totalAttempted) * 100) : 0}%</Text>
+                <Text style={styles.statLabel}>accuracy</Text>
+              </View>
+              <View style={styles.statDivider} />
+              <View style={styles.statItem}>
+                <Text style={[styles.statValue, { color: colors.destructive }]}>{incorrectAnswers}</Text>
+                <Text style={styles.statLabel}>missed</Text>
+              </View>
+            </View>
             <Pressable
-              accessibilityLabel="Submit answer"
-              onPress={submitAnswer}
-              style={({ pressed }) => [styles.submitButton, pressed && styles.pressed]}
+              accessibilityLabel="End game"
+              onPress={() => void finishGame()}
+              style={({ pressed }) => [styles.endGameButton, pressed && styles.pressed]}
             >
-              <Feather name="check" size={24} color={colors.primaryForeground} />
-              <Text style={styles.submitButtonText}>Check</Text>
+              <Feather name="square" size={15} color={colors.destructive} />
+              <Text style={styles.endGameText}>End</Text>
             </Pressable>
           </View>
-          <Text style={styles.answerHint}>Press return or tap Check to submit</Text>
-        </View>
 
-        <View style={styles.gameBottom}>
-          <View style={styles.statStrip}>
-            <View style={styles.statItem}>
-              <Text style={styles.statValue}>{totalAttempted}</Text>
-              <Text style={styles.statLabel}>attempted</Text>
+          <View style={styles.questionArea}>
+            <View style={styles.problemCard}>
+              <Text style={styles.questionLabel}>YOUR NEXT</Text>
+              <Text style={styles.questionText}>
+                {formatNumber(question.operand1)} {question.operator} {formatNumber(question.operand2)}
+              </Text>
             </View>
-            <View style={styles.statDivider} />
-            <View style={styles.statItem}>
-              <Text style={styles.statValue}>{totalAttempted ? Math.round((correctAnswers / totalAttempted) * 100) : 0}%</Text>
-              <Text style={styles.statLabel}>accuracy</Text>
+            <Text style={styles.answerLabel}>TYPE THE ANSWER</Text>
+            <View style={styles.answerRow}>
+              <TextInput
+                ref={answerInputRef}
+                autoFocus
+                autoCorrect={false}
+                blurOnSubmit={false}
+                keyboardType="number-pad"
+                onChangeText={setAnswerText}
+                onSubmitEditing={submitAnswer}
+                returnKeyType="done"
+                style={styles.answerInput}
+                value={answerText}
+              />
+              <Pressable
+                accessibilityLabel="Submit answer"
+                onPress={submitAnswer}
+                style={({ pressed }) => [styles.submitButton, pressed && styles.pressed]}
+              >
+                <Feather name="check" size={24} color={colors.primaryForeground} />
+                <Text style={styles.submitButtonText}>Check</Text>
+              </Pressable>
             </View>
-            <View style={styles.statDivider} />
-            <View style={styles.statItem}>
-              <Text style={[styles.statValue, { color: colors.destructive }]}>{incorrectAnswers}</Text>
-              <Text style={styles.statLabel}>missed</Text>
-            </View>
+            <Text style={styles.answerHint}>Press return or tap Check to submit</Text>
           </View>
-          <Pressable
-            accessibilityLabel="End game"
-            onPress={() => void finishGame()}
-            style={({ pressed }) => [styles.endGameButton, pressed && styles.pressed]}
-          >
-            <Text style={styles.endGameText}>End game</Text>
-          </Pressable>
-        </View>
-      </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     );
   }
 
@@ -709,7 +724,7 @@ function createStyles(colors: ReturnType<typeof useColors>) {
     soonPill: { backgroundColor: colors.muted, borderRadius: 5, paddingHorizontal: 7, paddingVertical: 4 },
     soonPillText: { color: colors.mutedForeground, fontFamily: 'Inter_700Bold', fontSize: 9, letterSpacing: 0.6 },
     pressed: { opacity: 0.72 },
-    gameScreen: { paddingHorizontal: 20, justifyContent: 'space-between' },
+    gameScreen: { flexGrow: 1, paddingHorizontal: 20 },
     gameTopRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
     gameContext: { flexDirection: 'row', alignItems: 'center', flex: 1, minWidth: 0 },
     gameContextIcon: { width: 36, height: 36, borderRadius: 12, backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center' },
@@ -726,8 +741,9 @@ function createStyles(colors: ReturnType<typeof useColors>) {
     timerTrack: { height: 5, borderRadius: 3, backgroundColor: colors.muted, overflow: 'hidden', marginTop: 12 },
     timerProgress: { height: '100%', borderRadius: 3, backgroundColor: colors.primary },
     timerProgressUrgent: { backgroundColor: colors.destructive },
-    questionArea: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingVertical: 18 },
-    problemCard: { width: '100%', minHeight: 194, borderRadius: 25, backgroundColor: colors.accent, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 14, paddingVertical: 22 },
+    gameHudRow: { flexDirection: 'row', alignItems: 'stretch', gap: 9, marginTop: 12 },
+    questionArea: { alignItems: 'center', paddingTop: 14, paddingBottom: 8 },
+    problemCard: { width: '100%', minHeight: 150, borderRadius: 22, backgroundColor: colors.accent, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 14, paddingVertical: 18 },
     questionLabel: { color: colors.accentForeground, fontFamily: 'Inter_700Bold', fontSize: 10, letterSpacing: 1.4, opacity: 0.68 },
     questionText: { color: colors.accentForeground, fontFamily: 'Inter_700Bold', fontSize: 39, letterSpacing: -1.3, marginTop: 16, textAlign: 'center' },
     answerLabel: { color: colors.mutedForeground, fontFamily: 'Inter_700Bold', fontSize: 10, letterSpacing: 1.2, marginTop: 24 },
@@ -736,14 +752,13 @@ function createStyles(colors: ReturnType<typeof useColors>) {
     submitButton: { width: 94, height: 68, borderRadius: 17, backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center', gap: 2 },
     submitButtonText: { color: colors.primaryForeground, fontFamily: 'Inter_700Bold', fontSize: 11 },
     answerHint: { color: colors.mutedForeground, fontFamily: 'Inter_400Regular', fontSize: 11, marginTop: 10 },
-    gameBottom: { gap: 12 },
-    statStrip: { minHeight: 70, borderRadius: 17, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around' },
-    statItem: { alignItems: 'center', minWidth: 80 },
-    statValue: { color: colors.foreground, fontFamily: 'Inter_700Bold', fontSize: 20 },
-    statLabel: { color: colors.mutedForeground, fontFamily: 'Inter_500Medium', fontSize: 11, marginTop: 3 },
-    statDivider: { width: 1, height: 31, backgroundColor: colors.border },
-    endGameButton: { alignItems: 'center', paddingVertical: 5 },
-    endGameText: { color: colors.mutedForeground, fontFamily: 'Inter_500Medium', fontSize: 13 },
+    statStrip: { flex: 1, minHeight: 56, borderRadius: 15, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around' },
+    statItem: { flex: 1, alignItems: 'center' },
+    statValue: { color: colors.foreground, fontFamily: 'Inter_700Bold', fontSize: 17 },
+    statLabel: { color: colors.mutedForeground, fontFamily: 'Inter_500Medium', fontSize: 9, marginTop: 2 },
+    statDivider: { width: 1, height: 26, backgroundColor: colors.border },
+    endGameButton: { width: 58, minHeight: 56, borderRadius: 15, borderWidth: 1, borderColor: colors.border, backgroundColor: colors.card, alignItems: 'center', justifyContent: 'center', gap: 3 },
+    endGameText: { color: colors.destructive, fontFamily: 'Inter_700Bold', fontSize: 10 },
     resultsHeader: { alignItems: 'center', marginTop: 16, marginBottom: 24 },
     resultIcon: { width: 64, height: 64, borderRadius: 22, backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center', marginBottom: 19 },
     resultsTitle: { color: colors.foreground, fontFamily: 'Inter_700Bold', fontSize: 29, letterSpacing: -0.8, marginTop: 9 },
