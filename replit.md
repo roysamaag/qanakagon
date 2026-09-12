@@ -1,6 +1,6 @@
-# [Project name]
+# 4-Minute Math Challenge
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+A fast mobile math game where players choose an operation and difficulty, solve as many problems as possible in four minutes, and review their personal scores.
 
 ## Run & Operate
 
@@ -22,23 +22,35 @@ _Replace the heading above with the project's name, and this line with one sente
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/math-challenge/app/index.tsx` — first playable game flow, question engine, timer, scoring, local history, and leaderboard placeholder.
+- `artifacts/math-challenge/constants/colors.ts` — light and dark semantic theme tokens.
+- `artifacts/math-challenge/assets/images/icon.png` — generated app icon.
+- `lib/api-spec/openapi.yaml` — shared API contract, currently unchanged while the first build uses local persistence.
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- The first milestone is frontend-first and uses AsyncStorage for local score history so the game can be tested on an iPhone without paid backend services.
+- The game engine keeps operation and digit ranges centralized and generates division questions with whole-number answers.
+- Public rankings are intentionally labeled as a future phase; competitive scores must be server-validated before being shown publicly.
+- The Expo app uses one root route with local screen state for setup, gameplay, results, score history, and leaderboard preview.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+- Select addition, subtraction, multiplication, or division.
+- Select one through four digit difficulty.
+- Play a timed 240-second round with rapid numeric answer entry.
+- See correct answers, accuracy, attempted, missed, and personal-best results.
+- Review locally saved score history.
+- Preview the planned category-based leaderboard experience.
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+- Keep paid services optional until the game needs them for accounts, secure rankings, or store release.
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- Expo Go can run the current playable build from the Replit phone preview without a Mac.
+- The React Native DevTools helper may log a missing GLib library in this environment; Metro still starts and the app preview remains available.
 
 ## Pointers
 
