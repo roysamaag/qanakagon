@@ -120,8 +120,18 @@ function getBestScore(scores: ScoreRecord[], operation: Operation, digitLevel: D
 export default function GameScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const topInset = Platform.OS === 'ios' ? Math.max(insets.top, 59) : insets.top;
-  const gameTopInset = Platform.OS === 'ios' ? Math.max(insets.top, 86) : topInset;
+  const topInset =
+    Platform.OS === 'ios'
+      ? Math.max(insets.top, 59)
+      : Platform.OS === 'web'
+        ? 67
+        : insets.top;
+  const gameTopInset =
+    Platform.OS === 'ios'
+      ? Math.max(insets.top, 86)
+      : Platform.OS === 'web'
+        ? 86
+        : topInset;
   const styles = useMemo(() => createStyles(colors), [colors]);
   const [screen, setScreen] = useState<Screen>('setup');
   const [operation, setOperation] = useState<Operation>('addition');
