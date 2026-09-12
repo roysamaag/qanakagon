@@ -101,6 +101,12 @@ function formatTime(seconds: number) {
   return `${minutes}:${remainder}`;
 }
 
+function formatCompletedAt(completedAt: string) {
+  const date = new Date(completedAt);
+  const time = date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+  return `${date.toLocaleDateString()} · ${time}`;
+}
+
 function getOperationLabel(operation: Operation) {
   return OPERATION_META[operation].label;
 }
@@ -231,7 +237,7 @@ export default function GameScreen() {
   };
 
   const renderHeader = (title: string, onBack?: () => void) => (
-    <View style={[styles.header, { paddingTop: topInset + 10 }]}>
+    <View style={[styles.header, { paddingTop: gameTopInset + 10 }]}>
       {onBack ? (
         <Pressable
           accessibilityLabel="Go back"
@@ -409,7 +415,7 @@ export default function GameScreen() {
               </View>
               <View style={styles.historyMain}>
                 <Text style={styles.historyTitle}>{getOperationLabel(item.operation)} · {item.digitLevel} digit</Text>
-                <Text style={styles.historyMeta}>{new Date(item.completedAt).toLocaleDateString()} · {item.accuracy}% accuracy</Text>
+                <Text style={styles.historyMeta}>{formatCompletedAt(item.completedAt)} · {item.accuracy}% accuracy</Text>
               </View>
               <View style={styles.historyScore}>
                 <Text style={styles.historyScoreValue}>{item.score}</Text>
@@ -508,7 +514,7 @@ export default function GameScreen() {
                   </View>
                   <View style={styles.rankingDetails}>
                     <Text style={styles.rankingScore}>{record.score} correct</Text>
-                    <Text style={styles.rankingMeta}>{record.accuracy}% accuracy · {new Date(record.completedAt).toLocaleDateString()}</Text>
+                    <Text style={styles.rankingMeta}>{record.accuracy}% accuracy · {formatCompletedAt(record.completedAt)}</Text>
                   </View>
                   {index === 0 && <Feather name="award" size={20} color={colors.accentForeground} />}
                 </View>
@@ -762,8 +768,8 @@ function createStyles(colors: ReturnType<typeof useColors>) {
     leaderboardHeroTop: { flexDirection: 'row', alignItems: 'center' },
     leaderboardHeroCopy: { flex: 1, marginLeft: 13 },
     leaderboardIcon: { width: 48, height: 48, borderRadius: 16, backgroundColor: colors.accent, alignItems: 'center', justifyContent: 'center' },
-    leaderboardTitle: { color: colors.primaryForeground, fontFamily: 'Inter_700Bold', fontSize: 20 },
-    leaderboardText: { color: colors.navyMuted, fontFamily: 'Inter_400Regular', fontSize: 12, lineHeight: 18, marginTop: 4 },
+    leaderboardTitle: { color: '#FFFDF7', fontFamily: 'Inter_700Bold', fontSize: 20 },
+    leaderboardText: { color: '#C7D2F0', fontFamily: 'Inter_400Regular', fontSize: 12, lineHeight: 18, marginTop: 4 },
     leaderboardBestRow: { marginTop: 18, paddingTop: 15, borderTopWidth: 1, borderTopColor: colors.mutedForeground, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
     leaderboardBestLabel: { color: colors.navyMuted, fontFamily: 'Inter_700Bold', fontSize: 9, letterSpacing: 1.1 },
     leaderboardBestValue: { color: colors.accent, fontFamily: 'Inter_700Bold', fontSize: 28 },
