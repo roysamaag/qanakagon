@@ -298,8 +298,6 @@ export default function GameScreen() {
               keyboardType="number-pad"
               onChangeText={setAnswerText}
               onSubmitEditing={submitAnswer}
-              placeholder="?"
-              placeholderTextColor={colors.mutedForeground}
               returnKeyType="done"
               style={styles.answerInput}
               value={answerText}
