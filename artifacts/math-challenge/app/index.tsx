@@ -115,6 +115,7 @@ export default function GameScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const topInset = Platform.OS === 'ios' ? Math.max(insets.top, 59) : insets.top;
+  const gameTopInset = Platform.OS === 'ios' ? Math.max(insets.top, 86) : topInset;
   const styles = useMemo(() => createStyles(colors), [colors]);
   const [screen, setScreen] = useState<Screen>('setup');
   const [operation, setOperation] = useState<Operation>('addition');
@@ -248,24 +249,46 @@ export default function GameScreen() {
   );
 
   if (screen === 'game') {
+    const timeProgress = Math.max(0, Math.min(100, (remaining / GAME_DURATION_SECONDS) * 100));
+    const timerIsUrgent = remaining <= 30;
     return (
-      <View style={[styles.screen, styles.gameScreen, { paddingTop: topInset + 18, paddingBottom: insets.bottom + 12 }]}>
+      <View style={[styles.screen, styles.gameScreen, { paddingTop: gameTopInset + 12, paddingBottom: insets.bottom + 10 }]}>
         <View style={styles.gameTopRow}>
-          <View>
-            <Text style={styles.eyebrow}>{getOperationLabel(operation).toUpperCase()} · {digitLevel} DIGIT</Text>
-            <Text style={styles.gameScore}>{correctAnswers} correct</Text>
+          <View style={styles.gameContext}>
+            <View style={styles.gameContextIcon}>
+              <Feather name={OPERATION_META[operation].icon} size={17} color={colors.primaryForeground} />
+            </View>
+            <View style={styles.gameContextCopy}>
+              <Text style={styles.gameContextTitle}>{getOperationLabel(operation)}</Text>
+              <Text style={styles.gameContextMeta}>{digitLevel} digit{digitLevel === 1 ? '' : 's'} · 4 min round</Text>
+            </View>
           </View>
-          <View style={styles.timerPill}>
-            <Feather name="clock" size={17} color={remaining <= 10 ? colors.destructive : colors.primary} />
-            <Text style={[styles.timerText, remaining <= 10 && { color: colors.destructive }]}>{formatTime(remaining)}</Text>
+          <View style={[styles.timerBlock, timerIsUrgent && styles.timerBlockUrgent]}>
+            <View style={styles.timerLabelRow}>
+              <Feather name="clock" size={13} color={timerIsUrgent ? colors.destructiveForeground : colors.primary} />
+              <Text style={[styles.timerLabel, timerIsUrgent && { color: colors.destructiveForeground }]}>TIME LEFT</Text>
+            </View>
+            <Text style={[styles.timerText, timerIsUrgent && { color: colors.destructiveForeground }]}>{formatTime(remaining)}</Text>
           </View>
+        </View>
+        <View style={styles.timerTrack}>
+          <View
+            style={[
+              styles.timerProgress,
+              { width: `${timeProgress}%` },
+              timerIsUrgent && styles.timerProgressUrgent,
+            ]}
+          />
         </View>
 
         <View style={styles.questionArea}>
-          <Text style={styles.questionLabel}>SOLVE</Text>
-          <Text style={styles.questionText}>
-            {formatNumber(question.operand1)} {question.operator} {formatNumber(question.operand2)}
-          </Text>
+          <View style={styles.problemCard}>
+            <Text style={styles.questionLabel}>YOUR NEXT</Text>
+            <Text style={styles.questionText}>
+              {formatNumber(question.operand1)} {question.operator} {formatNumber(question.operand2)}
+            </Text>
+          </View>
+          <Text style={styles.answerLabel}>TYPE THE ANSWER</Text>
           <View style={styles.answerRow}>
             <TextInput
               ref={answerInputRef}
@@ -286,10 +309,11 @@ export default function GameScreen() {
               onPress={submitAnswer}
               style={({ pressed }) => [styles.submitButton, pressed && styles.pressed]}
             >
-              <Feather name="arrow-up" size={26} color={colors.primaryForeground} />
+              <Feather name="check" size={24} color={colors.primaryForeground} />
+              <Text style={styles.submitButtonText}>Check</Text>
             </Pressable>
           </View>
-          <Text style={styles.answerHint}>Press return or tap the arrow to submit</Text>
+          <Text style={styles.answerHint}>Press return or tap Check to submit</Text>
         </View>
 
         <View style={styles.gameBottom}>
@@ -585,20 +609,34 @@ function createStyles(colors: ReturnType<typeof useColors>) {
     soonPillText: { color: colors.mutedForeground, fontFamily: 'Inter_700Bold', fontSize: 9, letterSpacing: 0.6 },
     pressed: { opacity: 0.72 },
     gameScreen: { paddingHorizontal: 20, justifyContent: 'space-between' },
-    gameTopRow: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' },
+    gameTopRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+    gameContext: { flexDirection: 'row', alignItems: 'center', flex: 1, minWidth: 0 },
+    gameContextIcon: { width: 36, height: 36, borderRadius: 12, backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center' },
+    gameContextCopy: { marginLeft: 10, flexShrink: 1 },
+    gameContextTitle: { color: colors.foreground, fontFamily: 'Inter_700Bold', fontSize: 15 },
+    gameContextMeta: { color: colors.mutedForeground, fontFamily: 'Inter_500Medium', fontSize: 11, marginTop: 3 },
     eyebrow: { color: colors.primary, fontFamily: 'Inter_700Bold', fontSize: 10, letterSpacing: 1.1 },
     gameScore: { color: colors.foreground, fontFamily: 'Inter_700Bold', fontSize: 17, marginTop: 6 },
-    timerPill: { backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border, borderRadius: 14, paddingHorizontal: 12, paddingVertical: 9, flexDirection: 'row', alignItems: 'center', gap: 7 },
-    timerText: { color: colors.primary, fontFamily: 'Inter_700Bold', fontSize: 17, fontVariant: ['tabular-nums'] },
-    questionArea: { alignItems: 'center', justifyContent: 'center', marginTop: -30 },
-    questionLabel: { color: colors.mutedForeground, fontFamily: 'Inter_700Bold', fontSize: 11, letterSpacing: 1.3 },
-    questionText: { color: colors.foreground, fontFamily: 'Inter_700Bold', fontSize: 38, letterSpacing: -1.2, marginTop: 18, textAlign: 'center' },
-    answerRow: { width: '100%', flexDirection: 'row', gap: 10, marginTop: 32 },
-    answerInput: { flex: 1, height: 62, borderRadius: 16, borderWidth: 2, borderColor: colors.primary, backgroundColor: colors.card, color: colors.foreground, fontFamily: 'Inter_700Bold', fontSize: 27, paddingHorizontal: 20, textAlign: 'center' },
-    submitButton: { width: 62, height: 62, borderRadius: 16, backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center' },
-    answerHint: { color: colors.mutedForeground, fontFamily: 'Inter_400Regular', fontSize: 12, marginTop: 12 },
-    gameBottom: { gap: 18 },
-    statStrip: { minHeight: 82, borderRadius: 17, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around' },
+    timerBlock: { minWidth: 96, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border, borderRadius: 14, paddingHorizontal: 11, paddingVertical: 8 },
+    timerBlockUrgent: { borderColor: colors.destructive, backgroundColor: colors.destructive },
+    timerLabelRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5 },
+    timerLabel: { color: colors.mutedForeground, fontFamily: 'Inter_700Bold', fontSize: 8, letterSpacing: 0.8 },
+    timerText: { color: colors.primary, fontFamily: 'Inter_700Bold', fontSize: 23, lineHeight: 27, textAlign: 'center', fontVariant: ['tabular-nums'], marginTop: 2 },
+    timerTrack: { height: 5, borderRadius: 3, backgroundColor: colors.muted, overflow: 'hidden', marginTop: 12 },
+    timerProgress: { height: '100%', borderRadius: 3, backgroundColor: colors.primary },
+    timerProgressUrgent: { backgroundColor: colors.destructive },
+    questionArea: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingVertical: 18 },
+    problemCard: { width: '100%', minHeight: 194, borderRadius: 25, backgroundColor: colors.navy, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 14, paddingVertical: 22 },
+    questionLabel: { color: colors.navyMuted, fontFamily: 'Inter_700Bold', fontSize: 10, letterSpacing: 1.4 },
+    questionText: { color: colors.card, fontFamily: 'Inter_700Bold', fontSize: 39, letterSpacing: -1.3, marginTop: 16, textAlign: 'center' },
+    answerLabel: { color: colors.mutedForeground, fontFamily: 'Inter_700Bold', fontSize: 10, letterSpacing: 1.2, marginTop: 24 },
+    answerRow: { width: '100%', flexDirection: 'row', justifyContent: 'center', gap: 10, marginTop: 9 },
+    answerInput: { width: 156, height: 68, borderRadius: 17, borderWidth: 2, borderColor: colors.primary, backgroundColor: colors.card, color: colors.foreground, fontFamily: 'Inter_700Bold', fontSize: 30, paddingHorizontal: 12, textAlign: 'center' },
+    submitButton: { width: 94, height: 68, borderRadius: 17, backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center', gap: 2 },
+    submitButtonText: { color: colors.primaryForeground, fontFamily: 'Inter_700Bold', fontSize: 11 },
+    answerHint: { color: colors.mutedForeground, fontFamily: 'Inter_400Regular', fontSize: 11, marginTop: 10 },
+    gameBottom: { gap: 12 },
+    statStrip: { minHeight: 70, borderRadius: 17, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around' },
     statItem: { alignItems: 'center', minWidth: 80 },
     statValue: { color: colors.foreground, fontFamily: 'Inter_700Bold', fontSize: 20 },
     statLabel: { color: colors.mutedForeground, fontFamily: 'Inter_500Medium', fontSize: 11, marginTop: 3 },
