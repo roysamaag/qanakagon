@@ -1,20 +1,25 @@
 {
   "expo": {
-    "name": "QANAKAGON Think Fast. Calculate Faster.",
-    "slug": "math-challenge",
+    "name": "QANAKAGON",
+    "slug": "qanakagon",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "math-challenge",
+    "scheme": "qanakagon",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "supportsTablet": false
+      "supportsTablet": false,
+      "bundleIdentifier": "com.qanakagon.app"
     },
-    "android": {},
+    "android": {
+      "package": "com.qanakagon.app"
+    },
     "web": {
       "favicon": "./assets/images/icon.png"
     },
-    "plugins": ["expo-router"],
+    "plugins": [
+      "expo-router"
+    ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
