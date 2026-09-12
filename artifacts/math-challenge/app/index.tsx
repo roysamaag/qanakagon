@@ -274,6 +274,7 @@ export default function GameScreen() {
         style={styles.screen}
       >
         <ScrollView
+          automaticallyAdjustKeyboardInsets={Platform.OS === 'ios'}
           bounces={false}
           contentContainerStyle={[
             styles.gameScreen,
@@ -742,11 +743,11 @@ function createStyles(colors: ReturnType<typeof useColors>) {
     timerProgress: { height: '100%', borderRadius: 3, backgroundColor: colors.primary },
     timerProgressUrgent: { backgroundColor: colors.destructive },
     gameHudRow: { flexDirection: 'row', alignItems: 'stretch', gap: 9, marginTop: 12 },
-    questionArea: { alignItems: 'center', paddingTop: 14, paddingBottom: 8 },
-    problemCard: { width: '100%', minHeight: 150, borderRadius: 22, backgroundColor: colors.accent, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 14, paddingVertical: 18 },
+    questionArea: { alignItems: 'center', paddingTop: 10, paddingBottom: 8 },
+    problemCard: { width: '100%', minHeight: 112, borderRadius: 20, backgroundColor: colors.accent, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 14, paddingVertical: 14 },
     questionLabel: { color: colors.accentForeground, fontFamily: 'Inter_700Bold', fontSize: 10, letterSpacing: 1.4, opacity: 0.68 },
-    questionText: { color: colors.accentForeground, fontFamily: 'Inter_700Bold', fontSize: 39, letterSpacing: -1.3, marginTop: 16, textAlign: 'center' },
-    answerLabel: { color: colors.mutedForeground, fontFamily: 'Inter_700Bold', fontSize: 10, letterSpacing: 1.2, marginTop: 24 },
+    questionText: { color: colors.accentForeground, fontFamily: 'Inter_700Bold', fontSize: 39, letterSpacing: -1.3, marginTop: 10, textAlign: 'center' },
+    answerLabel: { color: colors.mutedForeground, fontFamily: 'Inter_700Bold', fontSize: 10, letterSpacing: 1.2, marginTop: 16 },
     answerRow: { width: '100%', flexDirection: 'row', justifyContent: 'center', gap: 10, marginTop: 9 },
     answerInput: { width: 156, height: 68, borderRadius: 17, borderWidth: 2, borderColor: colors.primary, backgroundColor: colors.card, color: colors.foreground, fontFamily: 'Inter_700Bold', fontSize: 30, paddingHorizontal: 12, textAlign: 'center' },
     submitButton: { width: 94, height: 68, borderRadius: 17, backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center', gap: 2 },
