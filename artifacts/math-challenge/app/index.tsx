@@ -55,7 +55,7 @@ const OPERATION_META: Record<
   addition: { label: 'Addition', short: '+', icon: 'plus' },
   subtraction: { label: 'Subtraction', short: '−', icon: 'minus' },
   multiplication: { label: 'Multiplication', short: '×', icon: 'x' },
-  division: { label: 'Division', short: '÷', icon: 'slash' },
+  division: { label: 'Division', short: '÷', icon: 'divide' },
 };
 
 function randomInt(min: number, max: number) {
