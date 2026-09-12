@@ -371,7 +371,7 @@ export default function GameScreen() {
     const isBest = lastResult.score >= best;
     return (
       <ScrollView
-        contentContainerStyle={[styles.screenContent, { paddingTop: topInset + 14, paddingBottom: insets.bottom + 24 }]}
+        contentContainerStyle={[styles.screenContent, { paddingTop: topInset + 8, paddingBottom: insets.bottom + 12 }]}
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.resultsHeader}>
@@ -396,14 +396,14 @@ export default function GameScreen() {
           <Feather name="lock" size={18} color={colors.primary} />
           <View style={styles.noticeCopy}>
             <Text style={styles.noticeTitle}>Local practice score</Text>
-            <Text style={styles.noticeText}>This score is saved on this device. Online rankings will be added with secure accounts and server validation.</Text>
+            <Text style={styles.noticeText}>Saved on this device. Verified online rankings are coming later.</Text>
           </View>
         </View>
-        <Pressable onPress={startGame} style={({ pressed }) => [styles.primaryButton, pressed && styles.pressed]}>
+        <Pressable onPress={startGame} style={({ pressed }) => [styles.primaryButton, styles.resultPrimaryButton, pressed && styles.pressed]}>
           <Feather name="rotate-ccw" size={19} color={colors.primaryForeground} />
           <Text style={styles.primaryButtonText}>Play again</Text>
         </Pressable>
-        <Pressable onPress={resetToSetup} style={({ pressed }) => [styles.secondaryButton, pressed && styles.pressed]}>
+        <Pressable onPress={resetToSetup} style={({ pressed }) => [styles.secondaryButton, styles.resultSecondaryButton, pressed && styles.pressed]}>
           <Text style={styles.secondaryButtonText}>Change challenge</Text>
         </Pressable>
       </ScrollView>
@@ -751,22 +751,24 @@ function createStyles(colors: ReturnType<typeof useColors>) {
     statDivider: { width: 1, height: 26, backgroundColor: colors.border },
     endGameButton: { width: 58, minHeight: 56, borderRadius: 15, borderWidth: 1, borderColor: colors.border, backgroundColor: colors.card, alignItems: 'center', justifyContent: 'center', gap: 3 },
     endGameText: { color: colors.destructive, fontFamily: 'Inter_700Bold', fontSize: 10 },
-    resultsHeader: { alignItems: 'center', marginTop: 16, marginBottom: 24 },
-    resultIcon: { width: 64, height: 64, borderRadius: 22, backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center', marginBottom: 19 },
-    resultsTitle: { color: colors.foreground, fontFamily: 'Inter_700Bold', fontSize: 29, letterSpacing: -0.8, marginTop: 9 },
-    resultsSubtitle: { color: colors.mutedForeground, fontFamily: 'Inter_400Regular', fontSize: 14, marginTop: 7 },
-    scoreCard: { backgroundColor: colors.navy, borderRadius: 21, paddingHorizontal: 20, paddingVertical: 22, alignItems: 'center' },
+    resultsHeader: { alignItems: 'center', marginTop: 4, marginBottom: 13 },
+    resultIcon: { width: 48, height: 48, borderRadius: 16, backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center', marginBottom: 10 },
+    resultsTitle: { color: colors.foreground, fontFamily: 'Inter_700Bold', fontSize: 24, letterSpacing: -0.6, marginTop: 5 },
+    resultsSubtitle: { color: colors.mutedForeground, fontFamily: 'Inter_400Regular', fontSize: 12, marginTop: 4 },
+    scoreCard: { backgroundColor: colors.navy, borderRadius: 19, paddingHorizontal: 18, paddingVertical: 14, alignItems: 'center' },
     scoreLabel: { color: colors.navyMuted, fontFamily: 'Inter_700Bold', fontSize: 10, letterSpacing: 1.2 },
-    bigScore: { color: colors.accent, fontFamily: 'Inter_700Bold', fontSize: 68, letterSpacing: -2, marginTop: 2 },
-    scoreCaption: { color: colors.navyMuted, fontFamily: 'Inter_500Medium', fontSize: 12, marginTop: -5 },
-    resultsGrid: { width: '100%', flexDirection: 'row', justifyContent: 'space-around', borderTopWidth: 1, borderTopColor: '#304064', marginTop: 20, paddingTop: 16 },
+    bigScore: { color: colors.accent, fontFamily: 'Inter_700Bold', fontSize: 52, letterSpacing: -1.5 },
+    scoreCaption: { color: colors.navyMuted, fontFamily: 'Inter_500Medium', fontSize: 11, marginTop: -3 },
+    resultsGrid: { width: '100%', flexDirection: 'row', justifyContent: 'space-around', borderTopWidth: 1, borderTopColor: '#304064', marginTop: 12, paddingTop: 10 },
     resultMetric: { alignItems: 'center', minWidth: 75 },
-    resultMetricValue: { color: colors.card, fontFamily: 'Inter_700Bold', fontSize: 18 },
-    resultMetricLabel: { color: colors.navyMuted, fontFamily: 'Inter_400Regular', fontSize: 11, marginTop: 3 },
-    noticeCard: { flexDirection: 'row', gap: 12, backgroundColor: colors.secondary, borderRadius: 16, padding: 15, marginTop: 13, marginBottom: 18 },
+    resultMetricValue: { color: '#FFFDF7', fontFamily: 'Inter_700Bold', fontSize: 17 },
+    resultMetricLabel: { color: colors.navyMuted, fontFamily: 'Inter_400Regular', fontSize: 10, marginTop: 2 },
+    noticeCard: { flexDirection: 'row', gap: 10, backgroundColor: colors.secondary, borderRadius: 14, padding: 11, marginTop: 10, marginBottom: 11 },
     noticeCopy: { flex: 1 },
     noticeTitle: { color: colors.secondaryForeground, fontFamily: 'Inter_700Bold', fontSize: 13 },
-    noticeText: { color: colors.secondaryForeground, fontFamily: 'Inter_400Regular', fontSize: 12, lineHeight: 18, marginTop: 4, opacity: 0.82 },
+    noticeText: { color: colors.secondaryForeground, fontFamily: 'Inter_400Regular', fontSize: 11, lineHeight: 15, marginTop: 3, opacity: 0.82 },
+    resultPrimaryButton: { minHeight: 48, borderRadius: 14 },
+    resultSecondaryButton: { minHeight: 44, borderRadius: 13, marginTop: 7 },
     listContent: { paddingHorizontal: 20, paddingTop: 8, flexGrow: 1 },
     emptyState: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 26, paddingTop: 100 },
     emptyTitle: { color: colors.foreground, fontFamily: 'Inter_700Bold', fontSize: 19, marginTop: 15 },
