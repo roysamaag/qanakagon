@@ -114,6 +114,7 @@ function getBestScore(scores: ScoreRecord[], operation: Operation, digitLevel: D
 export default function GameScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
+  const topInset = Platform.OS === 'ios' ? Math.max(insets.top, 59) : insets.top;
   const styles = useMemo(() => createStyles(colors), [colors]);
   const [screen, setScreen] = useState<Screen>('setup');
   const [operation, setOperation] = useState<Operation>('addition');
@@ -229,7 +230,7 @@ export default function GameScreen() {
   };
 
   const renderHeader = (title: string, onBack?: () => void) => (
-    <View style={[styles.header, { paddingTop: insets.top + 10 }]}>
+    <View style={[styles.header, { paddingTop: topInset + 10 }]}>
       {onBack ? (
         <Pressable
           accessibilityLabel="Go back"
@@ -248,7 +249,7 @@ export default function GameScreen() {
 
   if (screen === 'game') {
     return (
-      <View style={[styles.screen, styles.gameScreen, { paddingTop: insets.top + 18, paddingBottom: insets.bottom + 12 }]}>
+      <View style={[styles.screen, styles.gameScreen, { paddingTop: topInset + 18, paddingBottom: insets.bottom + 12 }]}>
         <View style={styles.gameTopRow}>
           <View>
             <Text style={styles.eyebrow}>{getOperationLabel(operation).toUpperCase()} · {digitLevel} DIGIT</Text>
@@ -325,7 +326,7 @@ export default function GameScreen() {
     const isBest = lastResult.score >= best;
     return (
       <ScrollView
-        contentContainerStyle={[styles.screenContent, { paddingTop: insets.top + 14, paddingBottom: insets.bottom + 24 }]}
+        contentContainerStyle={[styles.screenContent, { paddingTop: topInset + 14, paddingBottom: insets.bottom + 24 }]}
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.resultsHeader}>
@@ -428,20 +429,20 @@ export default function GameScreen() {
   return (
     <ScrollView
       style={styles.screen}
-      contentContainerStyle={[styles.screenContent, { paddingTop: insets.top + 18, paddingBottom: insets.bottom + 24 }]}
+      contentContainerStyle={[styles.screenContent, { paddingTop: topInset + 18, paddingBottom: insets.bottom + 24 }]}
       showsVerticalScrollIndicator={false}
     >
       <View style={styles.brandRow}>
         <View style={styles.brandMark}><Feather name="zap" size={19} color={colors.primaryForeground} /></View>
         <View>
-          <Text style={styles.brandEyebrow}>THE DAILY DRILL</Text>
-          <Text style={styles.brandTitle}>4-Minute Math</Text>
+          <Text style={styles.brandEyebrow}>QANAKAGON</Text>
+          <Text style={styles.brandTitle}>Think Fast.</Text>
         </View>
         <View style={styles.practiceBadge}><Text style={styles.practiceBadgeText}>PRACTICE</Text></View>
       </View>
 
       <View style={styles.heroCopy}>
-        <Text style={styles.heroTitle}>How fast can you think?</Text>
+        <Text style={styles.heroTitle}>Calculate faster.</Text>
         <Text style={styles.heroText}>Pick a challenge. Solve without slowing down. Your four minutes start when you do.</Text>
       </View>
 

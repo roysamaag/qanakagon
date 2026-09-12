@@ -1,4 +1,4 @@
-# 4-Minute Math Challenge
+# QANAKAGON Think Fast. Calculate Faster.
 
 A fast mobile math game where players choose an operation and difficulty, solve as many problems as possible in four minutes, and review their personal scores.
 
