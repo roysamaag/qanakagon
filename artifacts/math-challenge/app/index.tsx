@@ -4,6 +4,7 @@ import * as Haptics from 'expo-haptics';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   FlatList,
+  Image,
   Keyboard,
   Platform,
   Pressable,
@@ -595,7 +596,12 @@ export default function GameScreen() {
         showsVerticalScrollIndicator={false}
       >
       <View style={styles.brandRow}>
-        <View style={styles.brandMark}><Feather name="zap" size={19} color={colors.primaryForeground} /></View>
+        <Image
+          source={require('../assets/images/qanakagon-lightning.png')}
+          style={styles.brandMark}
+          resizeMode="cover"
+          accessibilityLabel="QANAKAGON lightning and numbers logo"
+        />
         <View>
           <Text style={styles.brandEyebrow}>QANAKAGON</Text>
           <Text style={styles.brandTitle}>Think Fast.</Text>
@@ -702,7 +708,7 @@ function createStyles(colors: ReturnType<typeof useColors>) {
     headerTitle: { color: colors.foreground, fontFamily: 'Inter_600SemiBold', fontSize: 18 },
     iconButton: { width: 42, height: 42, alignItems: 'center', justifyContent: 'center' },
     brandRow: { flexDirection: 'row', alignItems: 'center', gap: 11 },
-    brandMark: { width: 38, height: 38, borderRadius: 13, backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center' },
+    brandMark: { width: 38, height: 38, borderRadius: 13 },
     brandEyebrow: { color: colors.primary, fontFamily: 'Inter_700Bold', fontSize: 10, letterSpacing: 1.1 },
     brandTitle: { color: colors.foreground, fontFamily: 'Inter_700Bold', fontSize: 18, letterSpacing: -0.4 },
     practiceBadge: { marginLeft: 'auto', backgroundColor: colors.accent, borderRadius: 7, paddingHorizontal: 8, paddingVertical: 5 },
