@@ -604,13 +604,12 @@ export default function GameScreen() {
         />
         <View>
           <Text style={styles.brandEyebrow}>QANAKAGON</Text>
-          <Text style={styles.brandTitle}>Think Fast.</Text>
+           <Text style={styles.brandTitle}>Think Fast. Calculate faster.</Text>
         </View>
         <View style={styles.practiceBadge}><Text style={styles.practiceBadgeText}>PRACTICE</Text></View>
       </View>
 
       <View style={styles.heroCopy}>
-        <Text style={styles.heroTitle}>Calculate faster.</Text>
         <Text style={styles.heroText}>Pick a challenge. Solve without slowing down. Your four minutes start when you do.</Text>
       </View>
 
@@ -710,12 +709,11 @@ function createStyles(colors: ReturnType<typeof useColors>) {
     brandRow: { flexDirection: 'row', alignItems: 'center', gap: 11 },
     brandMark: { width: 38, height: 38, borderRadius: 13 },
     brandEyebrow: { color: colors.primary, fontFamily: 'Inter_700Bold', fontSize: 10, letterSpacing: 1.1 },
-    brandTitle: { color: colors.foreground, fontFamily: 'Inter_700Bold', fontSize: 18, letterSpacing: -0.4 },
+    brandTitle: { color: colors.foreground, fontFamily: 'Inter_700Bold', fontSize: 14, letterSpacing: -0.35 },
     practiceBadge: { marginLeft: 'auto', backgroundColor: colors.accent, borderRadius: 7, paddingHorizontal: 8, paddingVertical: 5 },
     practiceBadgeText: { color: colors.accentForeground, fontFamily: 'Inter_700Bold', fontSize: 9, letterSpacing: 0.8 },
-    heroCopy: { marginTop: 21, marginBottom: 18 },
-    heroTitle: { color: colors.foreground, fontFamily: 'Inter_700Bold', fontSize: 28, letterSpacing: -1, lineHeight: 33, maxWidth: 300 },
-    heroText: { color: colors.mutedForeground, fontFamily: 'Inter_400Regular', fontSize: 13, lineHeight: 18, marginTop: 7, maxWidth: 340 },
+    heroCopy: { marginTop: 20, marginBottom: 18 },
+    heroText: { color: colors.mutedForeground, fontFamily: 'Inter_400Regular', fontSize: 13, lineHeight: 18, maxWidth: 340 },
     selectionSection: { marginBottom: 17 },
     sectionHeadingRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 11 },
     sectionLabel: { color: colors.mutedForeground, fontFamily: 'Inter_700Bold', fontSize: 10, letterSpacing: 0.9 },
