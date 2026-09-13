@@ -403,9 +403,32 @@ export default function GameScreen() {
           <Feather name="rotate-ccw" size={19} color={colors.primaryForeground} />
           <Text style={styles.primaryButtonText}>Play again</Text>
         </Pressable>
-        <Pressable onPress={resetToSetup} style={({ pressed }) => [styles.secondaryButton, styles.resultSecondaryButton, pressed && styles.pressed]}>
-          <Text style={styles.secondaryButtonText}>Change challenge</Text>
-        </Pressable>
+        <View style={styles.resultNavRow}>
+          <Pressable
+            accessibilityLabel="Change challenge"
+            onPress={resetToSetup}
+            style={({ pressed }) => [styles.resultNavButton, styles.resultNavButtonChange, pressed && styles.pressed]}
+          >
+            <Feather name="sliders" size={15} color={colors.accentForeground} />
+            <Text style={[styles.resultNavText, { color: colors.accentForeground }]}>Change</Text>
+          </Pressable>
+          <Pressable
+            accessibilityLabel="My scores"
+            onPress={() => setScreen('history')}
+            style={({ pressed }) => [styles.resultNavButton, pressed && styles.pressed]}
+          >
+            <Feather name="bar-chart-2" size={15} color={colors.primary} />
+            <Text style={styles.resultNavText}>My scores</Text>
+          </Pressable>
+          <Pressable
+            accessibilityLabel="Leaderboard"
+            onPress={() => setScreen('leaderboard')}
+            style={({ pressed }) => [styles.resultNavButton, pressed && styles.pressed]}
+          >
+            <Feather name="globe" size={15} color={colors.primary} />
+            <Text style={styles.resultNavText}>Leaderboard</Text>
+          </Pressable>
+        </View>
       </ScrollView>
     );
   }
@@ -768,7 +791,10 @@ function createStyles(colors: ReturnType<typeof useColors>) {
     noticeTitle: { color: colors.secondaryForeground, fontFamily: 'Inter_700Bold', fontSize: 13 },
     noticeText: { color: colors.secondaryForeground, fontFamily: 'Inter_400Regular', fontSize: 11, lineHeight: 15, marginTop: 3, opacity: 0.82 },
     resultPrimaryButton: { minHeight: 48, borderRadius: 14 },
-    resultSecondaryButton: { minHeight: 44, borderRadius: 13, marginTop: 7 },
+    resultNavRow: { flexDirection: 'row', gap: 7, marginTop: 7 },
+    resultNavButton: { flex: 1, minHeight: 46, borderRadius: 12, borderWidth: 1, borderColor: colors.border, backgroundColor: colors.card, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5, paddingHorizontal: 5 },
+    resultNavButtonChange: { borderColor: colors.accent, backgroundColor: colors.accent },
+    resultNavText: { color: colors.foreground, fontFamily: 'Inter_700Bold', fontSize: 10 },
     listContent: { paddingHorizontal: 20, paddingTop: 8, flexGrow: 1 },
     emptyState: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 26, paddingTop: 100 },
     emptyTitle: { color: colors.foreground, fontFamily: 'Inter_700Bold', fontSize: 19, marginTop: 15 },
