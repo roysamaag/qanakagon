@@ -1,0 +1,16 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "2HroKZWIDMoFxHXY1VJmD"
+uri = "file://artifacts/math-challenge/assets/images/icon.png"
+type = "image"
+title = "QANAKAGON Lightning Icon"
+description = "New 1024×1024 app icon with a yellow lightning bolt and math symbols."
+logical_id = "7c8a817d-23b8-4854-88d5-08582bf408da"
+content_hash = "sha256:e4a98dcbc44b59e91affe5daffa769213aab2553cb6a1b1eafce25dc26b2a4a2"
+size = 949007
+mtime_ms = 1789343265920
+storage_uri = "gcs://replit-rams-assets-riker/rams/assets/repl:c6e7535a-974c-49ad-93ab-74558c71a9f6/7c8a817d-23b8-4854-88d5-08582bf408da/967c2fc8-3b8e-404e-b0e3-9a93b736bd3f"
+storage_version_token = "1789343301297492"
+content_type = "image/png"
