@@ -1,1 +1,2 @@
 - [Fixed gameplay keyboard layout](fixed-gameplay-keyboard-layout.md) — keep keyboard adjustment scoped; a global controller shifts the timed challenge screen.
+- [Expo launch-asset cache](expo-launch-asset-cache.md) — use a new filename when replacing icon or splash artwork so Expo Go does not retain the old image.

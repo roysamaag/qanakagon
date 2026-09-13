@@ -4,9 +4,9 @@
     "slug": "qanakagon",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/qanakagon-lightning.png",
     "splash": {
-      "image": "./assets/images/icon.png",
+      "image": "./assets/images/qanakagon-lightning.png",
       "resizeMode": "contain",
       "backgroundColor": "#123BDE"
     },
@@ -20,19 +20,19 @@
       "package": "com.qanakagon.app"
     },
     "web": {
-      "favicon": "./assets/images/icon.png"
+      "favicon": "./assets/images/qanakagon-lightning.png"
     },
     "plugins": [
       "expo-router",
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/icon.png",
+          "image": "./assets/images/qanakagon-lightning.png",
           "imageWidth": 240,
           "resizeMode": "contain",
           "backgroundColor": "#123BDE",
           "dark": {
-            "image": "./assets/images/icon.png",
+            "image": "./assets/images/qanakagon-lightning.png",
             "backgroundColor": "#123BDE"
           }
         }
