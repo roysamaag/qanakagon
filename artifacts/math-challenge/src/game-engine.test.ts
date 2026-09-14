@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { DIGIT_RANGES, generateQuestion, randomInt, type DigitLevel } from './game-engine';
+import { DIGIT_RANGES, generateQuestion, randomInt, type DigitLevel } from './game-engine.ts';
 
 const levels: DigitLevel[] = [1, 2, 3, 4];
 
