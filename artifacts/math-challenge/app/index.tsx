@@ -41,6 +41,17 @@ type ScoreRecord = {
 const SCORE_STORAGE_KEY = 'math-challenge:scores';
 const GAME_DURATION_SECONDS = 240;
 const APP_VERSION = Constants.expoConfig?.version;
+
+const OPERATION_META: Record<
+  Operation,
+  { label: string; short: string; icon: keyof typeof Feather.glyphMap }
+> = {
+  addition: { label: 'Addition', short: '+', icon: 'plus' },
+  subtraction: { label: 'Subtraction', short: '−', icon: 'minus' },
+  multiplication: { label: 'Multiplication', short: '×', icon: 'x' },
+  division: { label: 'Division', short: '÷', icon: 'divide' },
+};
+
 function formatNumber(value: number) {
   return value.toLocaleString('en-US');
 }
