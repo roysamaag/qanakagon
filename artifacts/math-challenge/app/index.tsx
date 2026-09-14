@@ -17,16 +17,14 @@ import {
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useColors } from '@/hooks/useColors';
-import { generateQuestion, type DigitLevel, type Operation, type Question } from '@/src/game-engine';
+import {
+  generateQuestion,
+  type DigitLevel,
+  type Operation,
+  type Question,
+} from '@/src/game-engine';
 
 type Screen = 'setup' | 'game' | 'results' | 'history' | 'leaderboard';
-
-type Question = {
-  operand1: number;
-  operand2: number;
-  operator: string;
-  correctAnswer: number;
-};
 
 type ScoreRecord = {
   id: string;
