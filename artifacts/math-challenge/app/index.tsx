@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Feather } from '@expo/vector-icons';
+import Constants from 'expo-constants';
 import * as Haptics from 'expo-haptics';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
@@ -42,6 +43,7 @@ type ScoreRecord = {
 
 const SCORE_STORAGE_KEY = 'math-challenge:scores';
 const GAME_DURATION_SECONDS = 240;
+const APP_VERSION = Constants.expoConfig?.version;
 const DIGIT_RANGES: Record<DigitLevel, { min: number; max: number }> = {
   1: { min: 1, max: 9 },
   2: { min: 10, max: 99 },
@@ -682,6 +684,7 @@ export default function GameScreen() {
           <View style={styles.soonPill}><Text style={styles.soonPillText}>SOON</Text></View>
         </Pressable>
       </View>
+       {APP_VERSION ? <Text style={styles.versionText}>Version {APP_VERSION}</Text> : null}
       </ScrollView>
     </SafeAreaView>
   );
@@ -737,6 +740,7 @@ function createStyles(colors: ReturnType<typeof useColors>) {
     quickLinks: { marginTop: 13, gap: 7 },
     quickLink: { minHeight: 48, backgroundColor: colors.card, borderRadius: 13, paddingHorizontal: 14, flexDirection: 'row', alignItems: 'center', gap: 10 },
     quickLinkText: { flex: 1, color: colors.foreground, fontFamily: 'Inter_600SemiBold', fontSize: 14 },
+    versionText: { color: colors.mutedForeground, fontFamily: 'Inter_500Medium', fontSize: 11, textAlign: 'center', marginTop: 12, letterSpacing: 0.2 },
     soonPill: { backgroundColor: colors.muted, borderRadius: 5, paddingHorizontal: 7, paddingVertical: 4 },
     soonPillText: { color: colors.mutedForeground, fontFamily: 'Inter_700Bold', fontSize: 9, letterSpacing: 0.6 },
     pressed: { opacity: 0.72 },
