@@ -17,9 +17,8 @@ import {
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useColors } from '@/hooks/useColors';
+import { generateQuestion, type DigitLevel, type Operation, type Question } from '@/src/game-engine';
 
-type Operation = 'addition' | 'subtraction' | 'multiplication' | 'division';
-type DigitLevel = 1 | 2 | 3 | 4;
 type Screen = 'setup' | 'game' | 'results' | 'history' | 'leaderboard';
 
 type Question = {
@@ -44,56 +43,6 @@ type ScoreRecord = {
 const SCORE_STORAGE_KEY = 'math-challenge:scores';
 const GAME_DURATION_SECONDS = 240;
 const APP_VERSION = Constants.expoConfig?.version;
-const DIGIT_RANGES: Record<DigitLevel, { min: number; max: number }> = {
-  1: { min: 1, max: 9 },
-  2: { min: 10, max: 99 },
-  3: { min: 100, max: 999 },
-  4: { min: 1000, max: 9999 },
-};
-
-const OPERATION_META: Record<
-  Operation,
-  { label: string; short: string; icon: keyof typeof Feather.glyphMap }
-> = {
-  addition: { label: 'Addition', short: '+', icon: 'plus' },
-  subtraction: { label: 'Subtraction', short: '−', icon: 'minus' },
-  multiplication: { label: 'Multiplication', short: '×', icon: 'x' },
-  division: { label: 'Division', short: '÷', icon: 'divide' },
-};
-
-function randomInt(min: number, max: number) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function generateQuestion(operation: Operation, digitLevel: DigitLevel): Question {
-  const { min, max } = DIGIT_RANGES[digitLevel];
-  const first = randomInt(min, max);
-  const second = randomInt(min, max);
-
-  if (operation === 'addition') {
-    return { operand1: first, operand2: second, operator: '+', correctAnswer: first + second };
-  }
-
-  if (operation === 'subtraction') {
-    const operand1 = Math.max(first, second);
-    const operand2 = Math.min(first, second);
-    return { operand1, operand2, operator: '−', correctAnswer: operand1 - operand2 };
-  }
-
-  if (operation === 'multiplication') {
-    return { operand1: first, operand2: second, operator: '×', correctAnswer: first * second };
-  }
-
-  const divisor = second;
-  const quotient = randomInt(1, digitLevel === 1 ? 9 : digitLevel === 2 ? 12 : digitLevel === 3 ? 25 : 50);
-  return {
-    operand1: divisor * quotient,
-    operand2: divisor,
-    operator: '÷',
-    correctAnswer: quotient,
-  };
-}
-
 function formatNumber(value: number) {
   return value.toLocaleString('en-US');
 }
