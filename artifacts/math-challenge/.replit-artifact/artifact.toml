@@ -1,5 +1,5 @@
 kind = "mobile"
-previewPath = "/math-challenge/"
+previewPath = "/qanakagon/"
 title = "QANAKAGON Think Fast. Calculate Faster."
 description = "A fast competitive mobile math game where players choose an operation and difficulty, solve as many problems as possible in four minutes, and review their personal score."
 version = "1.0.0"
@@ -9,7 +9,7 @@ router = "expo-domain"
 [[services]]
 name = "expo"
 ensurePreviewReachable = "/status"
-paths = [ "/math-challenge/" ]
+paths = [ "/qanakagon/" ]
 localPort = 20537
 
 [services.development]
@@ -21,4 +21,4 @@ run = [ "pnpm", "--filter", "@workspace/math-challenge", "run", "serve" ]
 
 [services.env]
 PORT = "20537"
-BASE_PATH = "/math-challenge/"
+BASE_PATH = "/qanakagon/"
