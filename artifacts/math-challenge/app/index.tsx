@@ -606,7 +606,6 @@ export default function GameScreen() {
           <Text style={styles.brandEyebrow}>QANAKAGON</Text>
            <Text style={styles.brandTitle}>Think Fast. Calculate Faster.</Text>
         </View>
-        <View style={styles.practiceBadge}><Text style={styles.practiceBadgeText}>PRACTICE</Text></View>
       </View>
 
       <View style={styles.heroCopy}>
@@ -710,8 +709,6 @@ function createStyles(colors: ReturnType<typeof useColors>) {
     brandMark: { width: 38, height: 38, borderRadius: 13 },
     brandEyebrow: { color: colors.primary, fontFamily: 'Inter_700Bold', fontSize: 12, letterSpacing: 1 },
     brandTitle: { color: colors.foreground, fontFamily: 'Inter_700Bold', fontSize: 14, letterSpacing: -0.35 },
-    practiceBadge: { marginLeft: 'auto', backgroundColor: colors.accent, borderRadius: 7, paddingHorizontal: 8, paddingVertical: 5 },
-    practiceBadgeText: { color: colors.accentForeground, fontFamily: 'Inter_700Bold', fontSize: 9, letterSpacing: 0.8 },
     heroCopy: { marginTop: 20, marginBottom: 18 },
     heroText: { color: colors.mutedForeground, fontFamily: 'Inter_400Regular', fontSize: 13, lineHeight: 18, maxWidth: 340 },
     selectionSection: { marginBottom: 17 },
