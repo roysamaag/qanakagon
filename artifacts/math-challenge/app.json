@@ -14,7 +14,11 @@
     "userInterfaceStyle": "automatic",
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.qanakagon.app"
+      "bundleIdentifier": "com.qanakagon.app",
+      "infoPlist": {
+        "CFBundleDisplayName": "Qanakagon",
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "package": "com.qanakagon.app"
@@ -41,6 +45,12 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "7f38ac13-fe06-4878-830d-f655d67842d6"
+      }
+    },
+    "owner": "roysamtharakan"
   }
 }
